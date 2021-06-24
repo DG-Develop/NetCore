@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CoreEscuela.Entidades;
 using static System.Console;
 
@@ -30,15 +31,47 @@ namespace Etapa1
  
             escuela.Cursos = arregloCursos; */
 
-            escuela.Cursos = new Curso[] {
+            /* escuela.Cursos = new Curso[] {
                 new Curso(){ Nombre = "101" },
                 new Curso(){ Nombre = "201" },
                 new Curso{ Nombre = "301"}
-            };
+            }; */
             // escuela.Cursos = null;
             //escuela = null;
 
-            WriteLine(escuela);
+            escuela.Cursos = new List<Curso>(){
+                new Curso(){ Nombre = "101", Jornada = TiposJornada.Maniana  },
+                new Curso(){ Nombre = "201", Jornada = TiposJornada.Maniana  },
+                new Curso{ Nombre = "301", Jornada = TiposJornada.Maniana }
+            };
+
+            escuela.Cursos.Add(new Curso { Nombre = "102", Jornada = TiposJornada.Tarde });
+            escuela.Cursos.Add(new Curso { Nombre = "202", Jornada = TiposJornada.Tarde });
+            escuela.Cursos.Add(new Curso { Nombre = "302", Jornada = TiposJornada.Tarde });
+
+
+            var otraColeccion = new List<Curso>(){
+                new Curso(){ Nombre = "401", Jornada = TiposJornada.Maniana  },
+                new Curso(){ Nombre = "501", Jornada = TiposJornada.Maniana  },
+                new Curso{ Nombre = "502", Jornada = TiposJornada.Tarde }
+            };
+
+            //otraColeccion.Clear();
+
+           // Curso tmp = new Curso { Nombre = "101-Vacacional", Jornada = TiposJornada.Noche };
+
+            escuela.Cursos.AddRange(otraColeccion);
+            //escuela.Cursos.Add(tmp);
+
+            ImprimirCursosEscuela(escuela);
+
+            //WriteLine("Curso.Hash " + tmp.GetHashCode());
+            //escuela.Cursos.Remove(tmp);
+            Predicate<Curso> miAlgoritmo = Predicado;
+            escuela.Cursos.RemoveAll(miAlgoritmo);
+
+           // WriteLine(escuela);
+           WriteLine("===============================");
 
             ImprimirCursosEscuela(escuela);
 
@@ -48,6 +81,9 @@ namespace Etapa1
             //ImprimirCursosForEach(arregloCursos);
 
         }
+
+        private static bool Predicado(Curso curobj) => curobj.Nombre == "301";
+        
 
         private static void ImprimirCursosEscuela(Escuela escuela)
         {
