@@ -12,10 +12,22 @@ namespace CoreEscuela
         {
             var engine = new EscuelaEngine();
             Printer.WriteTitle("Bienvenidos a la Escuela");
-            Printer.Beep(10000, cantidad:10);
+            //Printer.Beep(10000, cantidad:10);
             engine.Inicializar();
 
             ImprimirCursosEscuela(engine.Escuela);
+
+            int [] numeros = {
+                1,
+                4,
+                54,
+                23
+            };
+
+            foreach (int n in numeros)
+            {
+                WriteLine(n);
+            }
 
         }
 
