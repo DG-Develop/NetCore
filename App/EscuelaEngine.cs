@@ -30,6 +30,55 @@ namespace CoreEscuela
 
         }
 
+        public List<ObjetoEscuelaBase> GetObjetosEscuela(
+            out int conteoEvaluaciones,
+            out int conteoAlumnos,
+            out int conteoAsignaturas,
+            out int conteoCursos,
+            bool traeEvaluaciones = true,
+            bool traeAlumnos = true,
+            bool traeAsignaturas = true,
+            bool traeCursos = true
+        )
+        {
+            conteoEvaluaciones = 0;
+            conteoAsignaturas = 0;
+            conteoAlumnos = 0;
+            
+            var listaObj = new List<ObjetoEscuelaBase>();
+            listaObj.Add(Escuela);
+
+            if(traeCursos)
+                listaObj.AddRange(Escuela.Cursos);
+
+            conteoCursos = Escuela.Cursos.Count;
+
+            foreach (var curso in Escuela.Cursos)
+            {
+                conteoAsignaturas += curso.Asignaturas.Count;
+                conteoAlumnos += curso.Alumnos.Count;
+
+                if(traeAsignaturas)
+                    listaObj.AddRange(curso.Asignaturas);
+
+                if(traeAlumnos)
+                    listaObj.AddRange(curso.Alumnos);
+
+                if (traeEvaluaciones)
+                {
+                    foreach (var alumno in curso.Alumnos)
+                    {
+                        listaObj.AddRange(alumno.Evaluaciones);
+                        conteoEvaluaciones += alumno.Evaluaciones.Count;
+                    }
+                }
+            }
+
+
+            return listaObj;
+        }
+
+        #region Metodos de Carga 
         private void CargarEvaluaciones()
         {
             foreach (var curso in Escuela.Cursos)
@@ -45,10 +94,10 @@ namespace CoreEscuela
                             var ev = new Evaluacion
                             {
                                 Asignatura = asignatura,
-                                Nombre = $"{asignatura.Nombre} Ev#{i+1}",
+                                Nombre = $"{asignatura.Nombre} Ev#{i + 1}",
                                 Nota = (float)(5 * rnd.NextDouble()),
                                 Alumno = alumno
-                            }; 
+                            };
                             alumno.Evaluaciones.Add(ev);
                         }
                     }
@@ -71,7 +120,7 @@ namespace CoreEscuela
             }
         }
 
-        private List<Alumno> GenerarAlumnosAlAzar( int cantidad )
+        private List<Alumno> GenerarAlumnosAlAzar(int cantidad)
         {
             string[] nombre1 = {
                 "Alba",
@@ -124,7 +173,7 @@ namespace CoreEscuela
             };
 
             Random rnd = new Random();
-            
+
 
             foreach (var curso in Escuela.Cursos)
             {
@@ -134,25 +183,6 @@ namespace CoreEscuela
             }
         }
 
-        public List<ObjetoEscuelaBase> GetObjetosEscuela()
-        {
-            var listaObj = new List<ObjetoEscuelaBase>();
-            listaObj.Add(Escuela);
-            listaObj.AddRange(Escuela.Cursos);
-
-            foreach (var curso in Escuela.Cursos)
-            {
-                listaObj.AddRange(curso.Asignaturas);
-                listaObj.AddRange(curso.Alumnos);
-
-                foreach (var alumno in curso.Alumnos)
-                {
-                    listaObj.AddRange(alumno.Evaluaciones);
-                }
-            }
-            
-
-            return listaObj;
-        }
+        #endregion
     }
 }
