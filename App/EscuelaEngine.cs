@@ -27,10 +27,68 @@ namespace CoreEscuela
             CargarCursos();
             CargarAsignaturas();
             CargarEvaluaciones();
-
         }
 
-        public List<ObjetoEscuelaBase> GetObjetosEscuela(
+        public Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>> GetDiccionarioObjetos()
+        {
+            
+
+             var diccionario = new Dictionary<LlaveDiccionario,IEnumerable<ObjetoEscuelaBase>>();
+            
+            diccionario.Add(LlaveDiccionario.Escuela, new[] {Escuela});
+            diccionario.Add(LlaveDiccionario.Curso, Escuela.Cursos.Cast<ObjetoEscuelaBase>());
+
+             return diccionario;
+        }
+
+        #region ReanOnlyList
+        public IReadOnlyList<ObjetoEscuelaBase> GetObjetosEscuela(
+            bool traeEvaluaciones = true,
+            bool traeAlumnos = true,
+            bool traeAsignaturas = true,
+            bool traeCursos = true
+        )
+        {
+            return GetObjetosEscuela(out int dummy, out dummy, out dummy, out dummy);
+        }
+
+        public IReadOnlyList<ObjetoEscuelaBase> GetObjetosEscuela(
+            out int conteoEvaluaciones,
+            bool traeEvaluaciones = true,
+            bool traeAlumnos = true,
+            bool traeAsignaturas = true,
+            bool traeCursos = true
+        )
+        {
+            return GetObjetosEscuela(out conteoEvaluaciones, out int dummy, out dummy, out dummy);
+        }
+
+        public IReadOnlyList<ObjetoEscuelaBase> GetObjetosEscuela(
+            out int conteoEvaluaciones,
+            out int conteoAlumnos,
+            bool traeEvaluaciones = true,
+            bool traeAlumnos = true,
+            bool traeAsignaturas = true,
+            bool traeCursos = true
+        )
+        {
+            return GetObjetosEscuela(out conteoEvaluaciones, out conteoAlumnos, out int dummy, out dummy);
+        }
+
+        public IReadOnlyList<ObjetoEscuelaBase> GetObjetosEscuela(
+            out int conteoEvaluaciones,
+            out int conteoAlumnos,
+            out int conteoAsignaturas,
+            bool traeEvaluaciones = true,
+            bool traeAlumnos = true,
+            bool traeAsignaturas = true,
+            bool traeCursos = true
+        )
+        {
+            return GetObjetosEscuela(out conteoEvaluaciones, out conteoAlumnos, out conteoAsignaturas, out int dummy);
+        }
+
+        public IReadOnlyList<ObjetoEscuelaBase> GetObjetosEscuela(
             out int conteoEvaluaciones,
             out int conteoAlumnos,
             out int conteoAsignaturas,
@@ -44,11 +102,11 @@ namespace CoreEscuela
             conteoEvaluaciones = 0;
             conteoAsignaturas = 0;
             conteoAlumnos = 0;
-            
+
             var listaObj = new List<ObjetoEscuelaBase>();
             listaObj.Add(Escuela);
 
-            if(traeCursos)
+            if (traeCursos)
                 listaObj.AddRange(Escuela.Cursos);
 
             conteoCursos = Escuela.Cursos.Count;
@@ -58,10 +116,10 @@ namespace CoreEscuela
                 conteoAsignaturas += curso.Asignaturas.Count;
                 conteoAlumnos += curso.Alumnos.Count;
 
-                if(traeAsignaturas)
+                if (traeAsignaturas)
                     listaObj.AddRange(curso.Asignaturas);
 
-                if(traeAlumnos)
+                if (traeAlumnos)
                     listaObj.AddRange(curso.Alumnos);
 
                 if (traeEvaluaciones)
@@ -75,8 +133,10 @@ namespace CoreEscuela
             }
 
 
-            return listaObj;
+            return listaObj.AsReadOnly();
         }
+
+        #endregion
 
         #region Metodos de Carga 
         private void CargarEvaluaciones()

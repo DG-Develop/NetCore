@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using CoreEscuela.Entidades;
 using CoreEscuela.Util;
 using static System.Console;
@@ -17,15 +15,18 @@ namespace CoreEscuela
             engine.Inicializar();
 
             ImprimirCursosEscuela(engine.Escuela);
-            var listaObjetos = engine.GetObjetosEscuela( 
-                out int conteoEvaluaciones,
-                out int conteoAlumnos,
-                out int conteoAsignaturas,
-                out int conteoCursos
-            );
 
+            Dictionary<int, string> diccionario = new Dictionary<int, string>();
+
+            diccionario.Add(10, "JuanK");
+            diccionario.Add(20, "Lorem Ipsum");
+
+
+            foreach (var keyValPair in diccionario)
+            {
+                WriteLine($"Key: {keyValPair.Key} Valor: {keyValPair.Value}");
+            }
             
-            //engine.Escuela.LimpiarLugar();
         }
 
         private static void ImprimirCursosEscuela(Escuela escuela)
