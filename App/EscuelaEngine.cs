@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CoreEscuela.Entidades;
+using CoreEscuela.Util;
 
 namespace CoreEscuela
 {
@@ -29,16 +30,56 @@ namespace CoreEscuela
             CargarEvaluaciones();
         }
 
+        public void ImprimirDiccionario(Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>> dic)
+        {
+            foreach(var obj in dic)
+            {
+                Printer.WriteTitle($"{obj.Key}");
+                foreach (var val in obj.Value)
+                {
+                    Console.WriteLine(val);
+                }
+            }
+        }
+
         public Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>> GetDiccionarioObjetos()
         {
-            
 
-             var diccionario = new Dictionary<LlaveDiccionario,IEnumerable<ObjetoEscuelaBase>>();
-            
-            diccionario.Add(LlaveDiccionario.Escuela, new[] {Escuela});
+
+            var diccionario = new Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>>();
+
+            diccionario.Add(LlaveDiccionario.Escuela, new[] { Escuela });
             diccionario.Add(LlaveDiccionario.Curso, Escuela.Cursos.Cast<ObjetoEscuelaBase>());
 
-             return diccionario;
+            var listatmp = new List<Evaluacion>();
+            var listatmpas = new List<Asignatura>();
+            var listatmpal = new List<Alumno>();
+
+            foreach (var curso in Escuela.Cursos)
+            {
+                listatmpas.AddRange(curso.Asignaturas);
+                listatmpal.AddRange(curso.Alumnos);
+
+                foreach (var alumno in curso.Alumnos)
+                {
+                    listatmp.AddRange(alumno.Evaluaciones);
+
+                }
+            }
+
+            diccionario.Add(
+                LlaveDiccionario.Asignatura,
+                listatmpas.Cast<ObjetoEscuelaBase>()
+            );
+            diccionario.Add(LlaveDiccionario.Alumno, listatmpal.Cast<ObjetoEscuelaBase>());
+
+            diccionario.Add(
+                LlaveDiccionario.Evaluacion,
+                listatmp.Cast<ObjetoEscuelaBase>()
+            );
+
+
+            return diccionario;
         }
 
         #region ReanOnlyList
