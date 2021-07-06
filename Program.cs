@@ -14,7 +14,7 @@ namespace CoreEscuela
             //Printer.Beep(10000, cantidad:10);
             engine.Inicializar();
 
-            ImprimirCursosEscuela(engine.Escuela);
+            //ImprimirCursosEscuela(engine.Escuela);
 
             Dictionary<int, string> diccionario = new Dictionary<int, string>();
 
@@ -29,7 +29,7 @@ namespace CoreEscuela
             
             var dictmp = engine.GetDiccionarioObjetos();
 
-            engine.ImprimirDiccionario(dictmp);
+            engine.ImprimirDiccionario(dictmp, true);
         }
 
         private static void ImprimirCursosEscuela(Escuela escuela)
