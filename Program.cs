@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using CoreEscuela.Entidades;
 using CoreEscuela.Util;
+using CoreEscuela.App;
 using static System.Console;
+using System;
 
 namespace CoreEscuela
 {
@@ -9,27 +11,21 @@ namespace CoreEscuela
     {
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.ProcessExit += AccionDelEvento;
+            AppDomain.CurrentDomain.ProcessExit += (o, s) => Printer.Beep(800, 1000, 2);
+            AppDomain.CurrentDomain.ProcessExit -= AccionDelEvento; //Remueve el evento
+
             var engine = new EscuelaEngine();
             Printer.WriteTitle("Bienvenidos a la Escuela");
-            //Printer.Beep(10000, cantidad:10);
-            engine.Inicializar();
-
-            //ImprimirCursosEscuela(engine.Escuela);
-
-            Dictionary<int, string> diccionario = new Dictionary<int, string>();
-
-            diccionario.Add(10, "JuanK");
-            diccionario.Add(20, "Lorem Ipsum");
-
-
-            foreach (var keyValPair in diccionario)
-            {
-                WriteLine($"Key: {keyValPair.Key} Valor: {keyValPair.Value}");
-            }
             
-            var dictmp = engine.GetDiccionarioObjetos();
+            var reporteador = new Reporteador(engine.GetDiccionarioObjetos());
+        }
 
-            engine.ImprimirDiccionario(dictmp, true);
+        private static void AccionDelEvento(object sender, EventArgs e)
+        {
+            Printer.WriteTitle("SALIENDO");
+            Printer.Beep(300, 1000, 3);
+            Printer.WriteTitle("SALIO");
         }
 
         private static void ImprimirCursosEscuela(Escuela escuela)
