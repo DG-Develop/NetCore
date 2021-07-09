@@ -5,5 +5,4 @@ public enum LlaveDiccionario
     Escuela,
     Evaluacion,
     Asignatura
-
 }

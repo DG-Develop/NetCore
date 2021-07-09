@@ -14,7 +14,7 @@ namespace CoreEscuela.App
             Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>> dicObsEsc
         )
         {
-            if(dicObsEsc == null)
+            if (dicObsEsc == null)
             {
                 throw new ArgumentNullException(nameof(dicObsEsc));
             }
@@ -24,7 +24,36 @@ namespace CoreEscuela.App
 
         public IEnumerable<Evaluacion> GetListaEvaluacion()
         {
-            _diccionario[LlaveDiccionario.Evaluacion]
+            //var lista = _diccionario.GetValueOrDefault(LlaveDiccionario.Escuela);
+            IEnumerable<Evaluacion> rta;
+
+            if (_diccionario.TryGetValue(
+                LlaveDiccionario.Evaluacion,
+                out IEnumerable<ObjetoEscuelaBase> lista
+            ))
+            {
+                return rta = lista.Cast<Evaluacion>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<string> GetListaAsignaturas()
+        {
+            var listaEvaluaciones = GetListaEvaluacion();
+
+            return (from ev in listaEvaluaciones
+                    where ev.Nota >= 3.0f
+                    select ev.Asignatura.Nombre).Distinct();
+        }
+
+        public Dictionary<string, IEnumerable<Evaluacion>> GetDicEvaluacionXAsig()
+        {
+            var dicRta = new Dictionary<string, IEnumerable<Evaluacion>>();
+
+            return dicRta;
         }
     }
 }

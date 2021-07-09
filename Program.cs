@@ -11,14 +11,18 @@ namespace CoreEscuela
     {
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.ProcessExit += AccionDelEvento;
+            /* AppDomain.CurrentDomain.ProcessExit += AccionDelEvento;
             AppDomain.CurrentDomain.ProcessExit += (o, s) => Printer.Beep(800, 1000, 2);
-            AppDomain.CurrentDomain.ProcessExit -= AccionDelEvento; //Remueve el evento
+            AppDomain.CurrentDomain.ProcessExit -= AccionDelEvento; //Remueve el evento */
 
             var engine = new EscuelaEngine();
+            engine.Inicializar();
             Printer.WriteTitle("Bienvenidos a la Escuela");
             
             var reporteador = new Reporteador(engine.GetDiccionarioObjetos());
+            var evalList = reporteador.GetListaEvaluacion();
+            var listaAg = reporteador.GetListaAsignaturas();
+
         }
 
         private static void AccionDelEvento(object sender, EventArgs e)
@@ -37,6 +41,7 @@ namespace CoreEscuela
                 foreach (var curso in escuela.Cursos)
                 {
                     WriteLine($"Nombre: {curso.Nombre}, Id: {curso.UniqueId}");
+                    
                 }
             }
 

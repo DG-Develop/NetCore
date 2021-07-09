@@ -68,8 +68,6 @@ namespace CoreEscuela.App
 
         public Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>> GetDiccionarioObjetos()
         {
-
-
             var diccionario = new Dictionary<LlaveDiccionario, IEnumerable<ObjetoEscuelaBase>>();
 
             diccionario.Add(LlaveDiccionario.Escuela, new[] { Escuela });
