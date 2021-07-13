@@ -72,9 +72,9 @@ namespace CoreEscuela.App
             return dicRta;
         }
 
-        public Dictionary<string, IEnumerable<Object>> GetPromedioAlumnPorAsignatura()
+        public Dictionary<string, IEnumerable<AlumnoPromedio>> GetPromedioAlumnPorAsignatura()
         {
-            var rta = new Dictionary<string, IEnumerable<Object>>();
+            var rta = new Dictionary<string, IEnumerable<AlumnoPromedio>>();
 
             var dicEvalXAsig = GetDicEvaluacionXAsig();
             foreach (var asigConEval in dicEvalXAsig)
@@ -84,16 +84,45 @@ namespace CoreEscuela.App
 
                 //En los linq agrupados en este ejemplo se agrupa por asigunarura y despues
                 // por el id unico del alumno
-                var dummy = from eval in asigConEval.Value
-                            group eval by eval.Alumno.UniqueId
+                var promAlumn = from eval in asigConEval.Value
+                                group eval by new
+                                {
+                                    eval.Alumno.UniqueId,
+                                    eval.Alumno.Nombre
+                                }
                             into grupoEvalsalumno
-                            select new
-                            {
-                                AlumnoId = grupoEvalsalumno.Key,
-                                Promedio = grupoEvalsalumno.Average(evaluacion => evaluacion.Nota)
-                            };
+                                select new AlumnoPromedio
+                                {
+                                    alumnoId = grupoEvalsalumno.Key.UniqueId,
+                                    alumnoNombre = grupoEvalsalumno.Key.Nombre,
+                                    promedio = grupoEvalsalumno.Average(evaluacion => evaluacion.Nota)
+                                };
+
+                rta.Add(asigConEval.Key, promAlumn);
             }
+
             return rta;
+        }
+        public Dictionary<string, IEnumerable<AlumnoPromedio>> GetListaTopPromedio(
+            int x, string asignatura
+        )
+        {
+            var resp = new Dictionary<string, IEnumerable<AlumnoPromedio>>();
+            var dicPromAlumPorAsignatura = GetPromedioAlumnPorAsignatura();
+
+            foreach (var item in dicPromAlumPorAsignatura)
+            {
+                if (item.Key == asignatura)
+                {
+                    var listaTop = (from ap in item.Value
+                                    orderby ap.promedio descending
+                                    select ap).Take(x);
+
+                    resp.Add(item.Key, listaTop);
+                }
+            }
+
+            return resp;
         }
     }
 }
