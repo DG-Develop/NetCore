@@ -25,24 +25,30 @@ namespace CoreEscuela.App
         public IEnumerable<Evaluacion> GetListaEvaluacion()
         {
             //var lista = _diccionario.GetValueOrDefault(LlaveDiccionario.Escuela);
-            IEnumerable<Evaluacion> rta;
 
             if (_diccionario.TryGetValue(
                 LlaveDiccionario.Evaluacion,
                 out IEnumerable<ObjetoEscuelaBase> lista
             ))
             {
-                return rta = lista.Cast<Evaluacion>();
+                return lista.Cast<Evaluacion>();
             }
             else
             {
-                return null;
+                return new List<Evaluacion>();
             }
         }
 
         public IEnumerable<string> GetListaAsignaturas()
         {
-            var listaEvaluaciones = GetListaEvaluacion();
+            return GetListaAsignaturas(out var dummy);
+        }
+
+        public IEnumerable<string> GetListaAsignaturas(
+            out IEnumerable<Evaluacion> listaEvaluaciones
+        )
+        {
+            listaEvaluaciones = GetListaEvaluacion();
 
             return (from ev in listaEvaluaciones
                     where ev.Nota >= 3.0f
@@ -52,8 +58,42 @@ namespace CoreEscuela.App
         public Dictionary<string, IEnumerable<Evaluacion>> GetDicEvaluacionXAsig()
         {
             var dicRta = new Dictionary<string, IEnumerable<Evaluacion>>();
+            var listaAsig = GetListaAsignaturas(out var listaEval);
+
+            foreach (var asig in listaAsig)
+            {
+                var evalsAsig = from eval in listaEval
+                                where eval.Asignatura.Nombre == asig
+                                select eval;
+
+                dicRta.Add(asig, evalsAsig);
+            }
 
             return dicRta;
+        }
+
+        public Dictionary<string, IEnumerable<Object>> GetPromedioAlumnPorAsignatura()
+        {
+            var rta = new Dictionary<string, IEnumerable<Object>>();
+
+            var dicEvalXAsig = GetDicEvaluacionXAsig();
+            foreach (var asigConEval in dicEvalXAsig)
+            {
+                // En los valores anonimos no se pueden regresar valores con el mismo nombre
+                // para ello se pone un nombre identificador y se iguala al valor relacionado
+
+                //En los linq agrupados en este ejemplo se agrupa por asigunarura y despues
+                // por el id unico del alumno
+                var dummy = from eval in asigConEval.Value
+                            group eval by eval.Alumno.UniqueId
+                            into grupoEvalsalumno
+                            select new
+                            {
+                                AlumnoId = grupoEvalsalumno.Key,
+                                Promedio = grupoEvalsalumno.Average(evaluacion => evaluacion.Nota)
+                            };
+            }
+            return rta;
         }
     }
 }
