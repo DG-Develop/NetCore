@@ -49,7 +49,7 @@ namespace CoreEscuela
 
             WriteLine("Ingrese la nota de la evaluación");
             Printer.PresioneENTER();
-
+            
             notastring = Console.ReadLine();
 
             if(string.IsNullOrWhiteSpace(notastring))
@@ -76,6 +76,10 @@ namespace CoreEscuela
                 {
                     Printer.WriteTitle("El valor de la nota no es un numero valido");
                     WriteLine("Saliendo del programa");
+                }
+                finally
+                {
+                    Printer.WriteTitle("Finally");
                 }
             }
         }

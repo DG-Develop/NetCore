@@ -110,6 +110,7 @@ namespace CoreEscuela.App
             var resp = new Dictionary<string, IEnumerable<AlumnoPromedio>>();
             var dicPromAlumPorAsignatura = GetPromedioAlumnPorAsignatura();
 
+
             foreach (var item in dicPromAlumPorAsignatura)
             {
                 if (item.Key == asignatura)
